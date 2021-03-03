@@ -1,0 +1,41 @@
+syntax = "proto3";
+option go_package = ".;gorpc";
+package gorpc;
+
+message Data {
+    string key = 1;
+    string name = 2;
+    string city = 3;
+    string country = 4;
+    repeated string alias = 5;
+    repeated string regions = 6;
+    repeated float coordinates = 7;
+    string province = 8;
+    string timezone = 9;
+    repeated string unlocs = 10;
+    string code = 11;
+}
+
+message PortArray {
+    repeated Data ports = 1;
+}
+
+message Result {
+    int32 code = 1;
+    string message = 2;
+}
+
+message PortKey {
+    string key = 1;
+}
+
+message Page {
+    int32 start = 1;
+    int32 size = 2;
+}
+
+service PortDomain {
+  rpc Save(Data) returns (Result) {}
+  rpc GetPort(PortKey) returns (Data) {}
+  rpc GetPorts(Page) returns (PortArray) {}
+}

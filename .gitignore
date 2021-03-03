@@ -1,0 +1,8 @@
+__debug_bin
+bin/
+pkg/
+.vscode/
+*.exe
+*/tmp/*
+client/client
+server/server

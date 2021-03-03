@@ -1,0 +1,19 @@
+FROM golang:1.16 as build-env
+ARG BUILD_ID
+LABEL stage=builder
+LABEL build=$BUILD_ID
+
+WORKDIR /go/src/app
+ADD . /go/src/app
+
+ENV GOPATH=/go/bin/app
+
+RUN cd server && make clean format test linux
+
+FROM gcr.io/distroless/base-debian10 as portdomain
+# using the smallest image possible
+
+WORKDIR /
+COPY --from=build-env /go/bin/app /
+
+CMD ["/server"]

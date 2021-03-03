@@ -1,0 +1,40 @@
+version: '2.4'
+
+services:
+
+  server:
+    container_name: go-server
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    mem_limit: 200M
+    networks:
+      network_microservices:
+        ipv4_address: 10.10.1.2
+    environment:
+      - GOMAXPROCS=4
+      - GRPC_ADDR=${GRPC_ADDR}
+
+  client:
+    container_name: go-client
+    depends_on: 
+      - server
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    mem_limit: 200M
+    ports:
+      - "8080${CLIENT_API_ADDR}"
+    networks:
+      network_microservices:
+    environment:
+      - GOMAXPROCS=4
+      - CLIENT_API_ADDR=${CLIENT_API_ADDR}
+      - GRPC_ADDR=10.10.1.2${GRPC_ADDR}
+
+networks:
+  network_microservices:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.1.0/24
